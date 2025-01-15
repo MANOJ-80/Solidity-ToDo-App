@@ -60,7 +60,7 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
 
 ## Screenshots
 ### Landing Page
-![Landing Page](https://raw.githubusercontent.com/MANOJ-80/Solidity-ToDo-App/blob/main/assets/AddTasks.png)
+![Landing Page](./assets/AddTasks.png)
 
 ### Todo List Interface
 ![Todo List - With Connected Wallet](https://raw.githubusercontent.com/egesabanci/solidity-todoapp/master/assets/with-connected-wallet.png)
