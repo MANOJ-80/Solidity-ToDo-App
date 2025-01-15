@@ -36,3 +36,17 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
    ```bash
    git clone <your-repository-url>
    cd <project-directory>
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   
+3. **Deploy the Smart Contract:**
+   - Deploy the `TodoList.sol` smart contract using Truffle or any Ethereum deployment tool.
+   - After deployment, note down the `contractAddress` and ABI.
+     
+4. **Start the Development Server:**
+   ```bash
+   npm start
+
+    
