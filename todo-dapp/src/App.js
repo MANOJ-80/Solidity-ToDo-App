@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import './index.css'; // Or the path to your CSS file
-
+// /home/itachi/Projects/DAPP-React/todo-dapp/build/contracts/TodoList.json
 import TodoList from './contracts/TodoList.json';
 import { Trash2, CheckCircle, XCircle, Plus, Loader } from 'lucide-react';
 
@@ -10,13 +10,17 @@ const App = () => {
   const [contract, setContract] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contractAddress, setContractAddress] = useState('');
+  const [hasContractAddress, setHasContractAddress] = useState(false); // New state to track if the contract address is set
 
   useEffect(() => {
-    loadBlockchainData();
-  }, []);
+    if (hasContractAddress) {
+      loadBlockchainData();
+    }
+  }, [hasContractAddress]); // Trigger loadBlockchainData when contractAddress is set
 
   const loadBlockchainData = async () => {
     try {
@@ -28,7 +32,12 @@ const App = () => {
         setAccount(currentAccount);
 
         const networkId = await web3.eth.net.getId();
-        const contractAddress = '0x1d316C5A678512B1A3fD94998cF66826eb2a05EC';
+
+        if (!Web3.utils.isAddress(contractAddress)) {
+          setError('Invalid contract address');
+          setLoading(false);
+          return;
+        }
 
         const todoList = new web3.eth.Contract(TodoList.abi, contractAddress);
         setContract(todoList);
@@ -90,6 +99,14 @@ const App = () => {
     setIsSubmitting(false);
   };
 
+  const handleContractAddressSubmit = () => {
+    if (Web3.utils.isAddress(contractAddress)) {
+      setHasContractAddress(true); // Trigger the loading of blockchain data
+    } else {
+      setError('Invalid contract address');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-red-500">
@@ -104,6 +121,36 @@ const App = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-300 to-red-500">
         <div className="bg-white text-red-500 p-6 rounded-lg shadow-lg">
           <p className="font-semibold text-lg">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasContractAddress) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-400 to-pink-300 py-8 px-4">
+        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+            Blockchain Todo List
+          </h1>
+          <p className="text-lg text-gray-600 mb-4">
+            Please enter the contract address to continue:
+          </p>
+          <div className="mb-4">
+            <input
+              type="text"
+              value={contractAddress}
+              onChange={(e) => setContractAddress(e.target.value)}
+              placeholder="Enter contract address"
+              className="px-4 py-2 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          <button
+            onClick={handleContractAddressSubmit}
+            className="px-4 py-2 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-xl focus:outline-none transition-all"
+          >
+            Submit
+          </button>
         </div>
       </div>
     );

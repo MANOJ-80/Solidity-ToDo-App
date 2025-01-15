@@ -6430,12 +6430,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x1d316C5A678512B1A3fD94998cF66826eb2a05EC",
-      "transactionHash": "0x464c0ca9e2a143cb946d69da3a7b01d427f936d934d05341db62afa8c3b20bf5"
+      "address": "0xf62e4657FF2704CB35C9A2c61fd46AF8E41D6Bc3",
+      "transactionHash": "0xf641405c2aae3dd25c6c5a0fdadd44442804e6680b7b970fc7634a224ae2231c"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-01-15T06:56:16.848Z",
+  "updatedAt": "2025-01-15T07:48:13.782Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

@@ -1,0 +1,14 @@
+# Compile the contract
+npx truffle compile
+
+# Deploy the contract
+npx truffle migrate --reset
+
+# Create the directory
+mkdir -p src/contracts/
+
+# Copy the new contract JSON
+cp build/contracts/TodoList.json src/contracts/
+
+# Run the app
+npm start
