@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import './index.css'; // Or the path to your CSS file
-// /home/itachi/Projects/DAPP-React/todo-dapp/build/contracts/TodoList.json
+import './index.css'; 
 import TodoList from './contracts/TodoList.json';
 import { Trash2, CheckCircle, XCircle, Plus, Loader } from 'lucide-react';
 
@@ -91,13 +90,15 @@ const App = () => {
     setIsSubmitting(true);
     try {
       await contract.methods.deleteTask(id).send({ from: account });
-      await loadBlockchainData();
+      // Remove task from the state after deletion
+      setTasks(tasks.filter(task => task.id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
       setError(error.message);
     }
     setIsSubmitting(false);
   };
+  
 
   const handleContractAddressSubmit = () => {
     if (Web3.utils.isAddress(contractAddress)) {
