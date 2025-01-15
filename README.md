@@ -34,12 +34,14 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repository-url>
-   cd <project-directory>
+   git clone "https://github.com/MANOJ-80/Solidity-ToDo-App.git"
+   cd Solidity-ToDo-App
+   ```
 
 2. **Install dependencies:**
    ```bash
    npm install
+   ```
    
 3. **Deploy the Smart Contract:**
    - Deploy the `TodoList.sol` smart contract using Truffle or any Ethereum deployment tool.
@@ -48,5 +50,6 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
 4. **Start the Development Server:**
    ```bash
    npm start
+   ```
 
     
