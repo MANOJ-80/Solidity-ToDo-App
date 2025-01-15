@@ -16,6 +16,24 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      {
+        test: /\.css$/i, // Rule for CSS files
+        use: [
+          'style-loader', // Injects CSS into the DOM
+          'css-loader', // Resolves CSS imports
+          {
+            loader: 'postcss-loader', // Processes TailwindCSS and other PostCSS plugins
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('tailwindcss'),
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+        ],
+      },
     ],
   },
   plugins: [
@@ -29,5 +47,8 @@ module.exports = {
     },
     compress: true,
     port: 3000,
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'], // Resolves these extensions automatically
   },
 };

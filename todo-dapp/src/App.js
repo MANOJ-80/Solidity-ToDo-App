@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import TodoList from './contracts/TodoList.json';
+import './index.css'; // Or the path to your CSS file
 
-function App() {
+import TodoList from './contracts/TodoList.json';
+import { Trash2, CheckCircle, XCircle, Plus, Loader } from 'lucide-react';
+
+const App = () => {
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     loadBlockchainData();
@@ -19,35 +23,20 @@ function App() {
       if (window.ethereum) {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         const web3 = new Web3(window.ethereum);
-        
-        // Get account
         const accounts = await web3.eth.getAccounts();
         const currentAccount = accounts[0];
         setAccount(currentAccount);
-        console.log("Connected Account:", currentAccount);
 
-        // Get network
         const networkId = await web3.eth.net.getId();
-        console.log("Network ID:", networkId);
+        const contractAddress = '0x79AF3906d02aDd70bA39f27b9622F1805e973803';
 
-        // Get contract instance
-        const contractAddress = '0xE2D4A2a51810B849e4a6a41817ba283a5D2838DA';
-        console.log("Contract Address:", contractAddress);
-
-        const todoList = new web3.eth.Contract(
-          TodoList.abi,
-          contractAddress
-        );
+        const todoList = new web3.eth.Contract(TodoList.abi, contractAddress);
         setContract(todoList);
 
-        // Load tasks
         const taskCount = await todoList.methods.taskCount().call();
-        console.log("Total tasks:", taskCount);
-
         const loadedTasks = [];
         for (let i = 1; i <= taskCount; i++) {
           const task = await todoList.methods.tasks(i).call();
-          console.log(`Task ${i}:`, task);
           loadedTasks.push(task);
         }
         setTasks(loadedTasks);
@@ -64,110 +53,141 @@ function App() {
 
   const createTask = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!newTask.trim()) return;
+    setIsSubmitting(true);
     try {
-      console.log("Creating task with account:", account);
-      const result = await contract.methods.createTask(newTask)
-        .send({ from: account });
-      console.log("Task created:", result);
+      await contract.methods.createTask(newTask).send({ from: account });
       setNewTask('');
       await loadBlockchainData();
     } catch (error) {
       console.error("Error creating task:", error);
       setError(error.message);
     }
-    setLoading(false);
+    setIsSubmitting(false);
   };
 
   const toggleTask = async (id) => {
-    setLoading(true);
+    setIsSubmitting(true);
     try {
-      console.log("Toggling task", id, "with account:", account);
-      const result = await contract.methods.toggleCompleted(id)
-        .send({ from: account });
-      console.log("Toggle result:", result);
+      await contract.methods.toggleCompleted(id).send({ from: account });
       await loadBlockchainData();
     } catch (error) {
       console.error("Error toggling task:", error);
       setError(error.message);
     }
-    setLoading(false);
+    setIsSubmitting(false);
+  };
+
+  const deleteTask = async (id) => {
+    setIsSubmitting(true);
+    try {
+      await contract.methods.deleteTask(id).send({ from: account });
+      await loadBlockchainData();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      setError(error.message);
+    }
+    setIsSubmitting(false);
   };
 
   if (loading) {
-    return <div>Loading Web3, accounts, and contract...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-red-500">
+        <Loader className="w-8 h-8 animate-spin text-white" />
+        <span className="ml-2 text-lg text-white font-bold">Loading Web3...</span>
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ color: 'red' }}>Error: {error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-300 to-red-500">
+        <div className="bg-white text-red-500 p-6 rounded-lg shadow-lg">
+          <p className="font-semibold text-lg">Error: {error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1>Blockchain Todo List</h1>
-      <p>Your account: {account}</p>
-      <p>Contract connected: {contract ? 'Yes' : 'No'}</p>
+    <div className="min-h-screen bg-gradient-to-tr from-blue-300 via-purple-400 to-pink-300 py-8 px-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+          Blockchain Todo List
+        </h1>
+        <p className="text-sm text-gray-600 mb-6">
+          Connected: <span className="font-mono text-blue-600">{account.slice(0, 6)}...{account.slice(-4)}</span>
+        </p>
 
-      <form onSubmit={createTask} style={{ marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="New task..."
-          style={{ marginRight: '10px', padding: '5px', width: '70%' }}
-        />
-        <button 
-          type="submit"
-          style={{
-            padding: '5px 10px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '3px'
-          }}
-        >
-          Add Task
-        </button>
-      </form>
-
-      <div>
-        {tasks.map((task) => (
-          <div 
-            key={task.id}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '10px',
-              margin: '5px 0',
-              backgroundColor: '#f5f5f5',
-              borderRadius: '5px'
-            }}
-          >
-            <span style={{ 
-              textDecoration: task.completed ? 'line-through' : 'none',
-              marginRight: '10px' 
-            }}>
-              {task.content}
-            </span>
-            <button 
-              onClick={() => toggleTask(task.id)}
-              style={{
-                padding: '5px 10px',
-                backgroundColor: task.completed ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '3px',
-                cursor: 'pointer'
-              }}
+        <form onSubmit={createTask} className="mb-8">
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="What needs to be done?"
+              className="flex-1 px-4 py-2 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              disabled={isSubmitting}
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !newTask.trim()}
+              className="px-4 py-2 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-xl focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
             >
-              {task.completed ? 'Undo' : 'Complete'}
+              <Plus size={20} />
+              Add
             </button>
           </div>
-        ))}
+        </form>
+
+        <div className="space-y-3">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className={`group flex items-center justify-between p-4 rounded-lg transition-all ${
+                task.completed
+                  ? 'bg-green-100 hover:bg-green-200'
+                  : 'bg-white hover:bg-blue-100'
+              } border border-gray-300 shadow-sm`}
+            >
+              <span
+                className={`flex-1 ${
+                  task.completed ? 'line-through text-green-500' : 'text-gray-800'
+                }`}
+              >
+                {task.content}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => toggleTask(task.id)}
+                  disabled={isSubmitting}
+                  className={`p-2 rounded-full transition-colors ${
+                    task.completed
+                      ? 'text-green-500 hover:bg-green-300'
+                      : 'text-blue-500 hover:bg-blue-300'
+                  }`}
+                >
+                  {task.completed ? <XCircle size={20} /> : <CheckCircle size={20} />}
+                </button>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  disabled={isSubmitting}
+                  className="p-2 text-red-500 hover:bg-red-300 rounded-full transition-colors"
+                >
+                  <Trash2 size={20} />
+                </button>
+              </div>
+            </div>
+          ))}
+          {tasks.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              No tasks yet. Add one to get started!
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;
