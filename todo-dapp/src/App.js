@@ -28,7 +28,7 @@ const App = () => {
         setAccount(currentAccount);
 
         const networkId = await web3.eth.net.getId();
-        const contractAddress = '0x79AF3906d02aDd70bA39f27b9622F1805e973803';
+        const contractAddress = '0x1d316C5A678512B1A3fD94998cF66826eb2a05EC';
 
         const todoList = new web3.eth.Contract(TodoList.abi, contractAddress);
         setContract(todoList);
