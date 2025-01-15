@@ -22,7 +22,6 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
 - **Solidity**: Smart contract language used to write the Todo List contract.
 - **Ethereum (MetaMask)**: Used for connecting to the Ethereum network.
 - **Tailwind CSS**: For modern and responsive UI styling.
-- **Lucide Icons**: For UI icons.
 
 ## Installation and Setup
 
