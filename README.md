@@ -52,4 +52,26 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
    npm start
    ```
 
-    
+## How to Use
+1. **Enter the Contract Address:** On the landing page, enter the Ethereum contract address where the TodoList smart contract is deployed.
+2. **Create Tasks:** Add tasks by entering the content and clicking "Create Task."
+3. **Toggle Task Completion:** Click on a task to toggle its completion status (completed or incomplete).
+4. **Delete Tasks:** Click the delete button next to a task to remove it from the blockchain.
+
+## Screenshots
+### Landing Page
+
+### Todo List Interface
+
+## Contributing
+  Feel free to fork the project and submit pull requests. If you have any ideas for improvements or issues, feel free to open an issue or contribute directly.
+
+## Future Enhancements
+
+- **User Authentication:** Implement user authentication to allow individual users to manage their tasks.
+- **Task Priorities:** Add the ability to assign priority levels (e.g., Low, Medium, High) to tasks.
+- **Due Dates:** Implement task due dates and display them in the UI.
+- **Improved UI/UX:** Enhance the user interface and user experience with animations and improved styling.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
