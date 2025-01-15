@@ -74,4 +74,4 @@ The Blockchain Todo List DApp is a decentralized application that allows users t
 - **Improved UI/UX:** Enhance the user interface and user experience with animations and improved styling.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
