@@ -5,7 +5,7 @@
 </div>
  
 
-# Blockchain Todo List DApp
+# Blockchain Todo App
 
 ## Overview
 The Blockchain Todo List DApp is a decentralized application that allows users to create, toggle, and delete tasks on the Ethereum blockchain. The tasks are managed through a smart contract deployed on the Ethereum network. This DApp uses Web3.js to interact with the blockchain, ensuring data is stored in a secure, immutable manner.
